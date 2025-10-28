@@ -1,0 +1,12 @@
+{
+  "migrate": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "migration",
+    "user": "sergio",
+    "password": "sergio123",
+    "migrationsDirectory": "./migrations",
+    "migrationTableName": "pgmigrations"
+  }
+}
+
