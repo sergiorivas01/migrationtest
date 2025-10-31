@@ -1,0 +1,79 @@
+{
+  // Tareas para ejecutar en terminales separadas
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "db:init",
+      "type": "npm",
+      "script": "init-db",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "db"
+      }
+    },
+    {
+      "label": "frontend:build",
+      "type": "npm",
+      "script": "frontend:build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "frontend"
+      }
+    },
+    {
+      "label": "frontend:dev",
+      "type": "npm",
+      "script": "frontend:dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": {
+            "regexp": ".*"
+          },
+          "endsPattern": {
+            "regexp": ".*Local:.*http://localhost:.*"
+          }
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "frontend"
+      }
+    },
+    {
+      "label": "dev:prepare",
+      "type": "shell",
+      "command": "echo starting dev prepare",
+      "dependsOn": [
+        "db:init",
+        "frontend:build",
+        "frontend:dev"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "dev:prepare-simple",
+      "type": "shell",
+      "command": "echo 'starting dev prepare - sin Vite'",
+      "dependsOn": [
+        "db:init",
+        "frontend:build"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
+
+
