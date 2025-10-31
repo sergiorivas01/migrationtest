@@ -1,0 +1,15 @@
+(function(){const a=document.createElement("link").relList;if(a&&a.supports&&a.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))r(t);new MutationObserver(t=>{for(const o of t)if(o.type==="childList")for(const c of o.addedNodes)c.tagName==="LINK"&&c.rel==="modulepreload"&&r(c)}).observe(document,{childList:!0,subtree:!0});function d(t){const o={};return t.integrity&&(o.integrity=t.integrity),t.referrerPolicy&&(o.referrerPolicy=t.referrerPolicy),t.crossOrigin==="use-credentials"?o.credentials="include":t.crossOrigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function r(t){if(t.ep)return;t.ep=!0;const o=d(t);fetch(t.href,o)}})();const f={users:"/api/users",posts:"/api/posts",todos:"/api/todos"};document.addEventListener("DOMContentLoaded",()=>{y()});function y(){const l=document.getElementById("fetchUsers"),a=document.getElementById("fetchPosts"),d=document.getElementById("fetchTodos"),r=document.getElementById("results"),t=document.getElementById("loading"),o=document.getElementById("error");if(!l||!a||!d||!r||!t||!o){console.error("Error: No se encontraron todos los elementos del DOM necesarios");return}function c(e){e?(t.classList.remove("hidden"),r.innerHTML="",o.classList.add("hidden"),o.textContent=""):t.classList.add("hidden")}function g(e){o.textContent=e,o.classList.remove("hidden")}async function p(e,i){c(!0);try{const s=await fetch(e);if(!s.ok)throw new Error(`Error HTTP: ${s.status}`);const n=await s.json();c(!1),h(n,i)}catch(s){c(!1),g(`Error al obtener datos: ${s.message}`),console.error("Error en fetchData:",s)}}function h(e,i){r.innerHTML="";const s=Array.isArray(e)?e:[e];if(s.slice(0,10).forEach(n=>{const u=m(n,i);r.appendChild(u)}),s.length===0){const n=document.createElement("p");n.style.textAlign="center",n.style.color="#666",n.textContent="No hay datos disponibles",r.appendChild(n)}}function m(e,i){const s=document.createElement("div");switch(s.className="card",i){case"users":s.innerHTML=`
+                    <h3>${e.name}</h3>
+                    <p><strong>Email:</strong> ${e.email}</p>
+                    <p><strong>Teléfono:</strong> ${e.phone||"N/A"}</p>
+                    <p><strong>Ciudad:</strong> ${e.city||"N/A"}</p>
+                    <p><strong>Compañía:</strong> ${e.company||"N/A"}</p>
+                    <p><strong>Join at:</strong> ${e.created_at}</p>
+                `;break;case"posts":s.innerHTML=`
+                    <h3>${e.title}</h3>
+                    <p>${e.body||"Sin contenido"}</p>
+                    <p><strong>ID de Usuario:</strong> ${e.user_id}</p>
+                `;break;case"todos":const n=e.completed?"badge-complete":"badge-incomplete",u=e.completed?"Completada":"Pendiente";s.innerHTML=`
+                    <h3>${e.title}</h3>
+                    <span class="badge ${n}">${u}</span>
+                `;break}return s}l.addEventListener("click",()=>p(f.users,"users")),a.addEventListener("click",()=>p(f.posts,"posts")),d.addEventListener("click",()=>p(f.todos,"todos")),console.log("✅ Aplicación inicializada correctamente")}

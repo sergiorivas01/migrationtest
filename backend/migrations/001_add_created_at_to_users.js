@@ -12,3 +12,4 @@ exports.down = (pgm) => {
   pgm.dropColumn('users', 'created_at');
 };
 
+

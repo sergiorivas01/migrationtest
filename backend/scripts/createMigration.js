@@ -14,13 +14,17 @@ if (!migrationName) {
 
 // Ejecutar node-pg-migrate create
 const { execSync } = require('child_process');
+const path = require('path');
 
 try {
+    // Cambiar al directorio backend para que las migraciones se creen en el lugar correcto
+    const backendDir = path.join(__dirname, '..');
+    
     execSync(`node_modules/.bin/node-pg-migrate create ${migrationName}`, {
+        cwd: backendDir,
         stdio: 'inherit',
         env: { ...process.env, DATABASE_URL: dbUrl }
     });
 } catch (error) {
     process.exit(1);
 }
-

@@ -1,31 +1,53 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Server",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/server.js",
-            "env": {
-                "NODE_ENV": "development"
-            },
-            "envFile": "${workspaceFolder}/.env",
-            "console": "integratedTerminal",
-            "restart": true,
-            "runtimeExecutable": "node",
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
-        },
-        {
-            "name": "Initialize Database",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/scripts/initDatabase.js",
-            "envFile": "${workspaceFolder}/.env",
-            "console": "integratedTerminal",
-            "runtimeExecutable": "node"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "🚀 Debug Completo (DB + Frontend + Backend)",
+      "program": "${workspaceFolder}/backend/server.js",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["--inspect"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "dev:prepare-simple",
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**"],
+      "restart": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "🚀 Debug Completo (con Vite Dev)",
+      "program": "${workspaceFolder}/backend/server.js",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["--inspect"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "dev:prepare",
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**"],
+      "restart": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "🐛 Debug Solo Backend",
+      "program": "${workspaceFolder}/backend/server.js",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["--inspect"],
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**"],
+      "restart": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "🗄️ Inicializar Base de Datos",
+      "program": "${workspaceFolder}/backend/scripts/initDatabase.js",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "node"
+    }
+  ]
 }
-

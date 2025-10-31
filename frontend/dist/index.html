@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Viewer</title>
+  <script type="module" crossorigin src="/assets/index-B4OsY3kO.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BNXJG1t5.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Visor de Datos de API</h1>
+            <p class="subtitle">Obtén información en tiempo real</p>
+        </header>
+        
+        <div class="button-group">
+            <button id="fetchUsers" class="btn btn-primary">Obtener Usuarios</button>
+            <button id="fetchPosts" class="btn btn-secondary">Obtener Publicaciones</button>
+            <button id="fetchTodos" class="btn btn-tertiary">Obtener Tareas</button>
+        </div>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Cargando datos...</p>
+        </div>
+
+        <div id="error" class="error hidden"></div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+</body>
+</html>
+
