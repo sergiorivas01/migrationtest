@@ -1,7 +1,87 @@
 {
-  // Tareas para ejecutar en terminales separadas
   "version": "2.0.0",
   "tasks": [
+    {
+      "label": "Frontend: Dev",
+      "type": "shell",
+      "command": "npm run frontend:dev",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": ".*",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Local:.*http://localhost:.*"
+        }
+      }
+    },
+    {
+      "label": "Backend: Dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": ".*",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Servidor corriendo en http://localhost:"
+        }
+      }
+    },
+    {
+      "label": "Backend: Dev (3001)",
+      "type": "shell",
+      "command": "PORT=3001 npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": ".*",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Servidor corriendo en http://localhost:"
+        }
+      }
+    },
     {
       "label": "db:init",
       "type": "npm",
@@ -60,6 +140,16 @@
         "db:init",
         "frontend:build",
         "frontend:dev"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: Backend+Frontend",
+      "type": "shell",
+      "command": "echo starting backend+frontend",
+      "dependsOn": [
+        "Backend: Dev",
+        "Frontend: Dev"
       ],
       "problemMatcher": []
     },

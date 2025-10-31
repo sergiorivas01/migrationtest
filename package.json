@@ -5,7 +5,7 @@
   "main": "backend/server.ts",
   "scripts": {
     "start": "ts-node backend/server.ts",
-    "dev": "ts-node-dev --respawn --transpile-only backend/server.ts",
+    "dev": "ts-node-dev --inspect=9229 --project backend/tsconfig.json --respawn --transpile-only backend/server.ts",
     "build:backend": "tsc -p backend",
     "build": "npm run build:backend && npm run frontend:build",
     "frontend:dev": "vite --config frontend/vite.config.ts",
