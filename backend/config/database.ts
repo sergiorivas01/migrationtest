@@ -1,9 +1,20 @@
-const { Pool } = require('pg');
+import { Pool } from 'pg';
+
+type DatabaseConfig = {
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password?: string;
+    max: number;
+    idleTimeoutMillis: number;
+    connectionTimeoutMillis: number;
+};
 
 // Configurar objeto de conexión
-const dbConfig = {
+const dbConfig: DatabaseConfig = {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
+    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
     database: process.env.DB_NAME || 'imageproject_db',
     user: process.env.DB_USER || 'postgres',
     max: 20,
@@ -27,6 +38,10 @@ pool.on('error', (err) => {
     console.error('❌ Error inesperado en el cliente PostgreSQL:', err);
 });
 
-module.exports = {
-    query: (text, params) => pool.query(text, params),
+const db = {
+    query: (text: string, params?: unknown[]) => pool.query(text, params),
 };
+
+export default db;
+
+

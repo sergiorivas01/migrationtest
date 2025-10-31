@@ -1,10 +1,19 @@
-const { Pool } = require('pg');
-require('dotenv').config();
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
+
+type DbConfig = {
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password?: string;
+};
 
 // Configurar objeto de conexión
-const dbConfig = {
+const dbConfig: DbConfig = {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
+    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
     database: process.env.DB_NAME || 'imageproject_db',
     user: process.env.DB_USER || 'postgres',
 };
@@ -20,7 +29,7 @@ if (process.env.DB_PASSWORD) {
 // Usar autenticación sin contraseña si no se especifica
 const pool = new Pool(dbConfig);
 
-async function initDatabase() {
+async function initDatabase(): Promise<void> {
     try {
         console.log('🔄 Inicializando base de datos...');
 
@@ -60,7 +69,7 @@ async function initDatabase() {
 
         // Insertar datos de ejemplo si las tablas están vacías
         const usersCount = await pool.query('SELECT COUNT(*) FROM users');
-        if (parseInt(usersCount.rows[0].count) === 0) {
+        if (parseInt(usersCount.rows[0].count, 10) === 0) {
             console.log('📝 Insertando datos de ejemplo...');
             
             await pool.query(`
@@ -97,4 +106,6 @@ async function initDatabase() {
     }
 }
 
-initDatabase();
+void initDatabase();
+
+

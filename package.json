@@ -2,18 +2,20 @@
   "name": "imageproject",
   "version": "1.0.0",
   "description": "Aplicación web con backend Node.js y PostgreSQL",
-  "main": "backend/server.js",
+  "main": "backend/server.ts",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "frontend:dev": "vite --config frontend/vite.config.js",
-    "frontend:build": "vite build --config frontend/vite.config.js",
-    "frontend:preview": "vite preview --config frontend/vite.config.js",
-    "init-db": "node backend/scripts/initDatabase.js",
+    "start": "ts-node backend/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only backend/server.ts",
+    "build:backend": "tsc -p backend",
+    "build": "npm run build:backend && npm run frontend:build",
+    "frontend:dev": "vite --config frontend/vite.config.ts",
+    "frontend:build": "vite build --config frontend/vite.config.ts",
+    "frontend:preview": "vite preview --config frontend/vite.config.ts",
+    "init-db": "ts-node backend/scripts/initDatabase.ts",
     "migrate": "node-pg-migrate",
-    "migrate:up": "node backend/scripts/migrateHelper.js up",
-    "migrate:down": "node backend/scripts/migrateHelper.js down",
-    "migrate:create": "node backend/scripts/createMigration.js"
+    "migrate:up": "ts-node backend/scripts/migrateHelper.ts up",
+    "migrate:down": "ts-node backend/scripts/migrateHelper.ts down",
+    "migrate:create": "ts-node backend/scripts/createMigration.ts"
   },
   "keywords": [
     "node",
@@ -32,9 +34,16 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "vite": "^5.4.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.9.2",
+    "@types/pg": "^8.15.6",
     "node-pg-migrate": "^8.0.3",
     "nodemon": "^3.0.1",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.0"
   }
 }

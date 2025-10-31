@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../config/database');
+import { Router, Request, Response } from 'express';
+import db from '../config/database';
+
+const router = Router();
 
 // GET - Obtener todas las publicaciones
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         const result = await db.query(
             'SELECT id, title, body, user_id FROM posts ORDER BY id ASC'
@@ -16,9 +17,9 @@ router.get('/', async (req, res) => {
 });
 
 // GET - Obtener una publicación por ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params as { id: string };
         const result = await db.query(
             'SELECT id, title, body, user_id FROM posts WHERE id = $1',
             [id]
@@ -36,9 +37,9 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST - Crear una nueva publicación
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
-        const { title, body, user_id } = req.body;
+        const { title, body, user_id } = req.body as { title: string; body?: string; user_id: number };
         
         const result = await db.query(
             'INSERT INTO posts (title, body, user_id) VALUES ($1, $2, $3) RETURNING *',
@@ -52,4 +53,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
+
+
