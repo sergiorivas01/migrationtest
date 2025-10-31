@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../config/database');
+import { Router, Request, Response } from 'express';
+import db from '../config/database';
+
+const router = Router();
 
 // GET - Obtener todas las tareas
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         const result = await db.query(
             'SELECT id, title, completed FROM todos ORDER BY id ASC'
@@ -16,9 +17,9 @@ router.get('/', async (req, res) => {
 });
 
 // GET - Obtener una tarea por ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params as { id: string };
         const result = await db.query(
             'SELECT id, title, completed FROM todos WHERE id = $1',
             [id]
@@ -36,9 +37,9 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST - Crear una nueva tarea
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
-        const { title, completed } = req.body;
+        const { title, completed } = req.body as { title: string; completed?: boolean };
         
         const result = await db.query(
             'INSERT INTO todos (title, completed) VALUES ($1, $2) RETURNING *',
@@ -53,10 +54,10 @@ router.post('/', async (req, res) => {
 });
 
 // PATCH - Actualizar el estado de una tarea
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
-        const { completed } = req.body;
+        const { id } = req.params as { id: string };
+        const { completed } = req.body as { completed: boolean };
         
         const result = await db.query(
             'UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *',
@@ -74,4 +75,6 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
+
+
