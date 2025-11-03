@@ -18,6 +18,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Rutas API sin prefijo /api (deben ir ANTES del static)
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
+app.use('/todos', todoRoutes);
+
 // Servir archivos estáticos del frontend compilado
 const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
 
@@ -28,11 +33,6 @@ if (!fs.existsSync(frontendDistPath)) {
 }
 
 app.use(express.static(frontendDistPath));
-
-// Rutas API sin prefijo /api
-app.use('/users', userRoutes);
-app.use('/posts', postRoutes);
-app.use('/todos', todoRoutes);
 
 // Ruta raíz (sirve la SPA compilada)
 app.get('/', (req: Request, res: Response) => {
