@@ -1,8 +1,15 @@
 // URLs de la API local
+function normalizeBase(base: string | undefined): string {
+    if (!base) return '';
+    return base.endsWith('/') ? base.slice(0, -1) : base;
+}
+
+const API_BASE = normalizeBase((import.meta as any).env?.VITE_API_BASE_URL);
+
 const API_URLS = {
-    users: '/users',
-    posts: '/posts',
-    todos: '/todos'
+    users: `${API_BASE}/users`,
+    posts: `${API_BASE}/posts`,
+    todos: `${API_BASE}/todos`
 } as const;
 
 // Esperar a que el DOM esté completamente cargado
@@ -44,7 +51,7 @@ function initApp(): void {
     }
 
     // Función para obtener datos de la API
-    async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promise<void> {
+async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promise<void> {
         showLoading(true);
         
         try {
@@ -58,10 +65,20 @@ function initApp(): void {
             showLoading(false);
             displayResults(data, type);
         } catch (error) {
-            showLoading(false);
-            const message = error instanceof Error ? error.message : String(error);
-            showError(`Error al obtener datos: ${message}`);
-            console.error('Error en fetchData:', error);
+            // Fallback a JSON estático si no hay API o falla la petición
+            try {
+                const staticPath = `/data/${type}.json`;
+                const staticResp = await fetch(staticPath);
+                if (!staticResp.ok) throw new Error(`Fallback HTTP ${staticResp.status}`);
+                const staticData = await staticResp.json();
+                showLoading(false);
+                displayResults(staticData, type);
+            } catch (fallbackErr) {
+                showLoading(false);
+                const message = (error instanceof Error ? error.message : String(error)) || (fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr));
+                showError(`Error al obtener datos: ${message}`);
+                console.error('Error en fetchData:', error, 'Fallback:', fallbackErr);
+            }
         }
     }
 

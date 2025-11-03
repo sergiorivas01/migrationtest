@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Bienvenido al blog",
+    "body": "Este es mi primer post sobre tecnología",
+    "user_id": 1
+  },
+  {
+    "id": 2,
+    "title": "Desarrollo web moderno",
+    "body": "Aprende las últimas tendencias en desarrollo",
+    "user_id": 1
+  },
+  {
+    "id": 3,
+    "title": "Diseño de interfaces",
+    "body": "Consejos para crear diseños hermosos",
+    "user_id": 2
+  }
+]
+
+
