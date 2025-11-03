@@ -1,0 +1,43 @@
+name: Build Frontend
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "frontend/**"
+      - "package.json"
+      - "package-lock.json"
+      - "frontend/tsconfig.json"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "frontend/**"
+      - "package.json"
+      - "package-lock.json"
+      - "frontend/tsconfig.json"
+
+jobs:
+  frontend:
+    name: Build Vite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend (Vite)
+        run: npm run frontend:build
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
