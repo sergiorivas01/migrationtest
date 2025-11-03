@@ -29,10 +29,10 @@ if (!fs.existsSync(frontendDistPath)) {
 
 app.use(express.static(frontendDistPath));
 
-// Rutas API
-app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/todos', todoRoutes);
+// Rutas API sin prefijo /api
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
+app.use('/todos', todoRoutes);
 
 // Ruta raíz (sirve la SPA compilada)
 app.get('/', (req: Request, res: Response) => {

@@ -1,8 +1,8 @@
 // URLs de la API local
 const API_URLS = {
-    users: '/api/users',
-    posts: '/api/posts',
-    todos: '/api/todos'
+    users: '/users',
+    posts: '/posts',
+    todos: '/todos'
 } as const;
 
 // Esperar a que el DOM esté completamente cargado
