@@ -16,7 +16,7 @@ try {
     // Change cwd to backend so migrations resolve correctly
     const backendDir = path.join(__dirname, '..');
     
-    execSync(`node_modules/.bin/node-pg-migrate ${action}`, {
+    execSync(`npx node-pg-migrate ${action}`, {
         cwd: backendDir,
         stdio: 'inherit',
         env: { ...process.env, DATABASE_URL: dbUrl }
