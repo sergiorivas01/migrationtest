@@ -6,26 +6,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// Configurar objeto de conexión
+// Configure connection object
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
     database: process.env.DB_NAME || 'imageproject_db',
     user: process.env.DB_USER || 'postgres',
 };
-// Solo agregar password si está definido y no es vacío
+// Add password only if defined and non-empty
 if (process.env.DB_PASSWORD) {
     const password = process.env.DB_PASSWORD.trim();
     if (password !== '') {
         dbConfig.password = password;
     }
 }
-// Usar autenticación sin contraseña si no se especifica
+// Use passwordless auth if not provided
 const pool = new pg_1.Pool(dbConfig);
 async function initDatabase() {
     try {
-        console.log('🔄 Inicializando base de datos...');
-        // Crear tabla de usuarios
+        console.log('🔄 Initializing database...');
+        // Create users table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -36,8 +36,8 @@ async function initDatabase() {
                 company VARCHAR(255)
             )
         `);
-        console.log('✅ Tabla "users" creada');
-        // Crear tabla de publicaciones
+        console.log('✅ Table "users" created');
+        // Create posts table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS posts (
                 id SERIAL PRIMARY KEY,
@@ -46,8 +46,8 @@ async function initDatabase() {
                 user_id INTEGER REFERENCES users(id)
             )
         `);
-        console.log('✅ Tabla "posts" creada');
-        // Crear tabla de tareas
+        console.log('✅ Table "posts" created');
+        // Create todos table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS todos (
                 id SERIAL PRIMARY KEY,
@@ -55,11 +55,11 @@ async function initDatabase() {
                 completed BOOLEAN DEFAULT FALSE
             )
         `);
-        console.log('✅ Tabla "todos" creada');
-        // Insertar datos de ejemplo si las tablas están vacías
+        console.log('✅ Table "todos" created');
+        // Seed sample data if tables are empty
         const usersCount = await pool.query('SELECT COUNT(*) FROM users');
         if (parseInt(usersCount.rows[0].count, 10) === 0) {
-            console.log('📝 Insertando datos de ejemplo...');
+            console.log('📝 Inserting sample data...');
             await pool.query(`
                 INSERT INTO users (name, email, phone, city, company) VALUES
                 ('Juan Pérez', 'juan@example.com', '555-0101', 'Madrid', 'Tech Corp'),
@@ -79,12 +79,12 @@ async function initDatabase() {
                 ('Crear API REST', false),
                 ('Mejorar el diseño', true)
             `);
-            console.log('✅ Datos de ejemplo insertados');
+            console.log('✅ Sample data inserted');
         }
-        console.log('🎉 Base de datos inicializada correctamente');
+        console.log('🎉 Database initialized successfully');
     }
     catch (error) {
-        console.error('❌ Error al inicializar la base de datos:', error);
+        console.error('❌ Error initializing database:', error);
         process.exit(1);
     }
     finally {

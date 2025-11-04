@@ -6,33 +6,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const database_1 = __importDefault(require("../config/database"));
 const router = (0, express_1.Router)();
-// GET - Obtener todos los usuarios
+// GET - Get all users
 router.get('/', async (req, res) => {
     try {
         const result = await database_1.default.query('SELECT id, name, email, phone, city, company, created_at FROM users ORDER BY id ASC');
         res.json(result.rows);
     }
     catch (error) {
-        console.error('Error al obtener usuarios:', error);
-        res.status(500).json({ error: 'Error al obtener usuarios' });
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Error fetching users' });
     }
 });
-// GET - Obtener un usuario por ID
+// GET - Get user by ID
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const result = await database_1.default.query('SELECT id, name, email, phone, city, company, created_at FROM users WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
+            return res.status(404).json({ error: 'User not found' });
         }
         res.json(result.rows[0]);
     }
     catch (error) {
-        console.error('Error al obtener usuario:', error);
-        res.status(500).json({ error: 'Error al obtener usuario' });
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Error fetching user' });
     }
 });
-// POST - Crear un nuevo usuario
+// POST - Create new user
 router.post('/', async (req, res) => {
     try {
         const { name, email, phone, city, company } = req.body;
@@ -40,8 +40,8 @@ router.post('/', async (req, res) => {
         res.status(201).json(result.rows[0]);
     }
     catch (error) {
-        console.error('Error al crear usuario:', error);
-        res.status(500).json({ error: 'Error al crear usuario' });
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Error creating user' });
     }
 });
 exports.default = router;

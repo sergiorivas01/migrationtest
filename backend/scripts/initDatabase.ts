@@ -10,7 +10,7 @@ type DbConfig = {
     password?: string;
 };
 
-// Configurar objeto de conexión
+// Configure connection object
 const dbConfig: DbConfig = {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
@@ -18,7 +18,7 @@ const dbConfig: DbConfig = {
     user: process.env.DB_USER || 'postgres',
 };
 
-// Solo agregar password si está definido y no es vacío
+// Add password only if defined and non-empty
 if (process.env.DB_PASSWORD) {
     const password = process.env.DB_PASSWORD.trim();
     if (password !== '') {
@@ -26,14 +26,14 @@ if (process.env.DB_PASSWORD) {
     }
 }
 
-// Usar autenticación sin contraseña si no se especifica
+// Use passwordless auth if not provided
 const pool = new Pool(dbConfig);
 
 async function initDatabase(): Promise<void> {
     try {
-        console.log('🔄 Inicializando base de datos...');
+        console.log('🔄 Initializing database...');
 
-        // Crear tabla de usuarios
+        // Create users table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -44,9 +44,9 @@ async function initDatabase(): Promise<void> {
                 company VARCHAR(255)
             )
         `);
-        console.log('✅ Tabla "users" creada');
+        console.log('✅ Table "users" created');
 
-        // Crear tabla de publicaciones
+        // Create posts table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS posts (
                 id SERIAL PRIMARY KEY,
@@ -55,9 +55,9 @@ async function initDatabase(): Promise<void> {
                 user_id INTEGER REFERENCES users(id)
             )
         `);
-        console.log('✅ Tabla "posts" creada');
+        console.log('✅ Table "posts" created');
 
-        // Crear tabla de tareas
+        // Create todos table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS todos (
                 id SERIAL PRIMARY KEY,
@@ -65,12 +65,12 @@ async function initDatabase(): Promise<void> {
                 completed BOOLEAN DEFAULT FALSE
             )
         `);
-        console.log('✅ Tabla "todos" creada');
+        console.log('✅ Table "todos" created');
 
-        // Insertar datos de ejemplo si las tablas están vacías
+        // Seed sample data if tables are empty
         const usersCount = await pool.query('SELECT COUNT(*) FROM users');
         if (parseInt(usersCount.rows[0].count, 10) === 0) {
-            console.log('📝 Insertando datos de ejemplo...');
+            console.log('📝 Inserting sample data...');
             
             await pool.query(`
                 INSERT INTO users (name, email, phone, city, company) VALUES
@@ -94,12 +94,12 @@ async function initDatabase(): Promise<void> {
                 ('Mejorar el diseño', true)
             `);
             
-            console.log('✅ Datos de ejemplo insertados');
+            console.log('✅ Sample data inserted');
         }
 
-        console.log('🎉 Base de datos inicializada correctamente');
+        console.log('🎉 Database initialized successfully');
     } catch (error) {
-        console.error('❌ Error al inicializar la base de datos:', error);
+        console.error('❌ Error initializing database:', error);
         process.exit(1);
     } finally {
         await pool.end();

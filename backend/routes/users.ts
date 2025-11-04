@@ -3,7 +3,7 @@ import db from '../config/database';
 
 const router = Router();
 
-// GET - Obtener todos los usuarios
+// GET - Get all users
 router.get('/', async (req: Request, res: Response) => {
     try {
         const result = await db.query(
@@ -11,12 +11,12 @@ router.get('/', async (req: Request, res: Response) => {
         );
         res.json(result.rows);
     } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-        res.status(500).json({ error: 'Error al obtener usuarios' });
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Error fetching users' });
     }
 });
 
-// GET - Obtener un usuario por ID
+// GET - Get user by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const { id } = req.params as { id: string };
@@ -26,17 +26,17 @@ router.get('/:id', async (req: Request, res: Response) => {
         );
         
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
+            return res.status(404).json({ error: 'User not found' });
         }
         
         res.json(result.rows[0]);
     } catch (error) {
-        console.error('Error al obtener usuario:', error);
-        res.status(500).json({ error: 'Error al obtener usuario' });
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Error fetching user' });
     }
 });
 
-// POST - Crear un nuevo usuario
+// POST - Create new user
 router.post('/', async (req: Request, res: Response) => {
     try {
         const { name, email, phone, city, company } = req.body as {
@@ -50,8 +50,8 @@ router.post('/', async (req: Request, res: Response) => {
         
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Error al crear usuario:', error);
-        res.status(500).json({ error: 'Error al crear usuario' });
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Error creating user' });
     }
 });
 

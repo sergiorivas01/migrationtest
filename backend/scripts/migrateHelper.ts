@@ -1,19 +1,19 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Construir DATABASE_URL desde variables de entorno
+// Build DATABASE_URL from env vars
 const dbUrl = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
 
-// Configurar DATABASE_URL para node-pg-migrate
+// Configure DATABASE_URL for node-pg-migrate
 process.env.DATABASE_URL = dbUrl;
 
-// Ejecutar node-pg-migrate con los argumentos pasados
-const action = process.argv[2]; // 'up' o 'down'
+// Execute node-pg-migrate with provided args
+const action = process.argv[2]; // 'up' or 'down'
 import { execSync } from 'child_process';
 import path from 'path';
 
 try {
-    // Cambiar al directorio backend para que las migraciones se encuentren correctamente
+    // Change cwd to backend so migrations resolve correctly
     const backendDir = path.join(__dirname, '..');
     
     execSync(`node_modules/.bin/node-pg-migrate ${action}`, {

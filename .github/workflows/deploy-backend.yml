@@ -1,0 +1,86 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "backend/**"
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "backend/**"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch: # Allow manual execution
+
+jobs:
+  migrate:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for migrations
+        run: |
+          if [ -z "$(ls -A backend/migrations/*.js 2>/dev/null)" ]; then
+            echo "No migrations found, skipping..."
+            exit 0
+          fi
+          echo "Found migrations:"
+          ls -la backend/migrations/
+
+      - name: Run migrations
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "Running database migrations..."
+          npm run migrate:up
+        continue-on-error: true
+
+  backend:
+    name: Type Check and Build Backend
+    runs-on: ubuntu-latest
+    needs: migrate
+    if: always() && (needs.migrate.result == 'success' || needs.migrate.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type Check backend
+        run: npx tsc -p backend --noEmit
+
+      - name: Build backend
+        run: npm run build:backend
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: backend/dist

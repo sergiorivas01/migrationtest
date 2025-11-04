@@ -13,6 +13,7 @@
     "frontend:preview": "vite preview --config frontend/vite.config.ts",
     "init-db": "ts-node backend/scripts/initDatabase.ts",
     "migrate": "node-pg-migrate",
+    "two": "npm run build:backend && npm run frontend:build",
     "migrate:up": "ts-node backend/scripts/migrateHelper.ts up",
     "migrate:down": "ts-node backend/scripts/migrateHelper.ts down",
     "migrate:create": "ts-node backend/scripts/createMigration.ts"

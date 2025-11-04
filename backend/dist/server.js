@@ -19,19 +19,19 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-// Servir archivos estáticos del frontend compilado
+// API routes without /api prefix (must be BEFORE static)
+app.use('/users', users_1.default);
+app.use('/posts', posts_1.default);
+app.use('/todos', todos_1.default);
+// Serve compiled frontend static files
 const frontendDistPath = path_1.default.join(__dirname, '..', 'frontend', 'dist');
-// Verificar si existe el directorio dist
+// Warn if dist folder is missing
 if (!fs_1.default.existsSync(frontendDistPath)) {
-    console.warn('⚠️  ADVERTENCIA: El directorio frontend/dist no existe.');
-    console.warn('   Ejecuta "npm run frontend:build" para compilar el frontend.');
+    console.warn('⚠️  WARNING: The frontend/dist directory does not exist.');
+    console.warn('   Run "npm run frontend:build" to build the frontend.');
 }
 app.use(express_1.default.static(frontendDistPath));
-// Rutas API
-app.use('/api/users', users_1.default);
-app.use('/api/posts', posts_1.default);
-app.use('/api/todos', todos_1.default);
-// Ruta raíz (sirve la SPA compilada)
+// Root (serves the compiled SPA)
 app.get('/', (req, res) => {
     const indexPath = path_1.default.join(frontendDistPath, 'index.html');
     if (fs_1.default.existsSync(indexPath)) {
@@ -40,11 +40,11 @@ app.get('/', (req, res) => {
     else {
         res.status(503).send(`
             <html>
-                <head><title>Frontend no compilado</title></head>
+                <head><title>Frontend not built</title></head>
                 <body>
-                    <h1>⚠️ Frontend no compilado</h1>
-                    <p>El directorio <code>frontend/dist</code> no existe.</p>
-                    <p>Por favor, ejecuta: <code>npm run frontend:build</code></p>
+                    <h1>⚠️ Frontend not built</h1>
+                    <p>The <code>frontend/dist</code> directory does not exist.</p>
+                    <p>Please run: <code>npm run frontend:build</code></p>
                 </body>
             </html>
         `);
@@ -54,21 +54,21 @@ app.get('/', (req, res) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Algo salió mal!' });
+    res.status(500).json({ error: 'Something went wrong!' });
 });
 // Iniciar servidor
 app.listen(PORT, async () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📊 Conectando a: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`📊 Connecting to: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
     // Probar conexión a la base de datos
     try {
         await database_1.default.query('SELECT NOW()');
-        console.log('✅ Conexión a PostgreSQL establecida');
+        console.log('✅ PostgreSQL connection established');
     }
     catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error('❌ Error al conectar con PostgreSQL:', message);
-        console.error('💡 Verifica que el contenedor Docker esté corriendo');
+        console.error('❌ Error connecting to PostgreSQL:', message);
+        console.error('💡 Make sure the Docker container is running');
     }
 });
 exports.default = app;

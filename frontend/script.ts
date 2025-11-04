@@ -1,4 +1,4 @@
-// URLs de la API local
+// API base configuration
 function normalizeBase(base: string | undefined): string {
     if (!base) return '';
     return base.endsWith('/') ? base.slice(0, -1) : base;
@@ -12,13 +12,13 @@ const API_URLS = {
     todos: `${API_BASE}/todos`
 } as const;
 
-// Esperar a que el DOM esté completamente cargado
+// Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
 function initApp(): void {
-    // Referencias a elementos del DOM
+    // DOM element references
     const fetchUsersBtn = document.getElementById('fetchUsers') as HTMLButtonElement | null;
     const fetchPostsBtn = document.getElementById('fetchPosts') as HTMLButtonElement | null;
     const fetchTodosBtn = document.getElementById('fetchTodos') as HTMLButtonElement | null;
@@ -26,13 +26,13 @@ function initApp(): void {
     const loadingDiv = document.getElementById('loading') as HTMLDivElement | null;
     const errorDiv = document.getElementById('error') as HTMLDivElement | null;
 
-    // Verificar que todos los elementos existen
+    // Ensure all elements exist
     if (!fetchUsersBtn || !fetchPostsBtn || !fetchTodosBtn || !resultsDiv || !loadingDiv || !errorDiv) {
         console.error('Error: No se encontraron todos los elementos del DOM necesarios');
         return;
     }
 
-    // Función para mostrar/ocultar loading
+    // Show/hide loading indicator
     function showLoading(show: boolean): void {
         if (show) {
             loadingDiv.classList.remove('hidden');
@@ -44,13 +44,13 @@ function initApp(): void {
         }
     }
 
-    // Función para mostrar errores
+    // Show errors
     function showError(message: string): void {
         errorDiv.textContent = message;
         errorDiv.classList.remove('hidden');
     }
 
-    // Función para obtener datos de la API
+    // Fetch data from API (with static fallback)
 async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promise<void> {
         showLoading(true);
         
@@ -65,7 +65,7 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             showLoading(false);
             displayResults(data, type);
         } catch (error) {
-            // Fallback a JSON estático si no hay API o falla la petición
+            // Fallback to static JSON if API is unavailable or request fails
             try {
                 const staticPath = `/data/${type}.json`;
                 const staticResp = await fetch(staticPath);
@@ -76,17 +76,17 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             } catch (fallbackErr) {
                 showLoading(false);
                 const message = (error instanceof Error ? error.message : String(error)) || (fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr));
-                showError(`Error al obtener datos: ${message}`);
-                console.error('Error en fetchData:', error, 'Fallback:', fallbackErr);
+                showError(`Failed to fetch data: ${message}`);
+                console.error('Error in fetchData:', error, 'Fallback:', fallbackErr);
             }
         }
     }
 
-    // Función para mostrar los resultados
+    // Render results
     function displayResults(data: unknown, type: 'users' | 'posts' | 'todos'): void {
         resultsDiv.innerHTML = '';
         
-        // Limitar a 10 resultados para mejor visualización
+        // Limit to 10 items for better readability
         const arrayData = Array.isArray(data) ? data : [data];
         
         arrayData.slice(0, 10).forEach((item: any) => {
@@ -98,12 +98,12 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             const noData = document.createElement('p');
             noData.style.textAlign = 'center';
             noData.style.color = '#666';
-            noData.textContent = 'No hay datos disponibles';
+            noData.textContent = 'No data available';
             resultsDiv.appendChild(noData);
         }
     }
 
-    // Función para crear tarjetas según el tipo de datos
+    // Build card elements by type
     function createCard(item: any, type: 'users' | 'posts' | 'todos'): HTMLDivElement {
         const card = document.createElement('div');
         card.className = 'card';
@@ -113,25 +113,25 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
                 card.innerHTML = `
                     <h3>${item.name}</h3>
                     <p><strong>Email:</strong> ${item.email}</p>
-                    <p><strong>Teléfono:</strong> ${item.phone || 'N/A'}</p>
-                    <p><strong>Ciudad:</strong> ${item.city || 'N/A'}</p>
-                    <p><strong>Compañía:</strong> ${item.company || 'N/A'}</p>
-                    <p><strong>Join at:</strong> ${item.created_at}</p>
+                    <p><strong>Phone:</strong> ${item.phone || 'N/A'}</p>
+                    <p><strong>City:</strong> ${item.city || 'N/A'}</p>
+                    <p><strong>Company:</strong> ${item.company || 'N/A'}</p>
+                    <p><strong>Joined at:</strong> ${item.created_at}</p>
                 `;
                 break;
                 
             case 'posts':
                 card.innerHTML = `
                     <h3>${item.title}</h3>
-                    <p>${item.body || 'Sin contenido'}</p>
-                    <p><strong>ID de Usuario:</strong> ${item.user_id}</p>
+                    <p>${item.body || 'No content'}</p>
+                    <p><strong>User ID:</strong> ${item.user_id}</p>
                 `;
                 break;
                 
             case 'todos':
                 {
                     const badgeClass = item.completed ? 'badge-complete' : 'badge-incomplete';
-                    const statusText = item.completed ? 'Completada' : 'Pendiente';
+                    const statusText = item.completed ? 'Completed' : 'Pending';
                     card.innerHTML = `
                         <h3>${item.title}</h3>
                         <span class="badge ${badgeClass}">${statusText}</span>
@@ -143,12 +143,12 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
         return card;
     }
 
-    // Event Listeners
+    // Event listeners
     fetchUsersBtn.addEventListener('click', () => fetchData(API_URLS.users, 'users'));
     fetchPostsBtn.addEventListener('click', () => fetchData(API_URLS.posts, 'posts'));
     fetchTodosBtn.addEventListener('click', () => fetchData(API_URLS.todos, 'todos'));
     
-    console.log('✅ Aplicación inicializada correctamente');
+    console.log('✅ App initialized');
 }
 
 
