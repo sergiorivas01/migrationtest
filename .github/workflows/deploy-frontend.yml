@@ -53,6 +53,7 @@ jobs:
           output_location: "frontend/dist"
 
           app_build_command: "npm ci && npm run frontend:build"
+
           
 
   close_pull_request:
