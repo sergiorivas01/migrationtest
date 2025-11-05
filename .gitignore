@@ -1,20 +1,84 @@
 # Dependencias
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Variables de entorno
 .env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Configuraciones con credenciales
+**/migrate.json
+backend/migrate.json
+
+# Build outputs / Compilados
+dist/
+build/
+*.tsbuildinfo
+*.js.map
 
 # Logs
 *.log
-npm-debug.log*
+logs/
+*.log.*
 
 # Sistema operativo
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
 # IDE
 # .vscode/  # Comentado para mantener launch.json
 .idea/
 *.swp
 *.swo
+*~
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
 
+# Vite
+.vite/
+vite.config.*.timestamp-*
+
+# TypeScript
+*.tsbuildinfo
+
+# Cache
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache
+.stylelintcache
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# Deployment
+deploy-package/
+*.tar.gz
+*.zip
