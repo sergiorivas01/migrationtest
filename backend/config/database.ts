@@ -34,7 +34,7 @@ pool.on('connect', () => {
     console.log('🔌 Nueva conexión establecida con PostgreSQL');
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
     console.error('❌ Error inesperado en el cliente PostgreSQL:', err);
 });
 
