@@ -4,7 +4,7 @@ export default defineConfig({
   root: __dirname,
   base: '/',
   server: {
-    port: 5173,
+    port: 8001,
     proxy: {
       '/users': { target: 'http://localhost:3000', changeOrigin: true, secure: false },
       '/posts': { target: 'http://localhost:3000', changeOrigin: true, secure: false },

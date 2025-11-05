@@ -5,15 +5,15 @@ on:
     branches: [main, dev]
     paths:
       - "frontend/**"
-      - "package.json"
-      - "package-lock.json"
+      - "../.github/workflows/deploy-frontend.yml"
+
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches: [main, dev]
     paths:
       - "frontend/**"
-      - "package.json"
-      - "package-lock.json"
+      - "../.github/workflows/deploy-frontend.yml"
+      
   workflow_dispatch: # Allow manual execution
 
 jobs:
@@ -31,6 +31,9 @@ jobs:
         with:
           submodules: true
           lfs: false
+          
+      - name: Move to folder frontend
+        run: cd frontend
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
