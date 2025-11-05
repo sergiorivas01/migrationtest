@@ -5,13 +5,13 @@ on:
     branches: [main, dev]
     paths:
       - "backend/**"
-      - "../.github/workflows/deploy-backend.yml"
+      - ".github/workflows/deploy-backend.yml"
 
   pull_request:
     branches: [main, dev]
     paths:
       - "backend/**"
-      - "../.github/workflows/deploy-backend.yml"
+      - ".github/workflows/deploy-backend.yml"
 
   workflow_dispatch: # Allow manual execution
 
@@ -35,9 +35,11 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
         run: npm ci --include=dev
+        working-directory: backend
 
       - name: Check for migrations
         run: |
@@ -89,27 +91,30 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Move to folder backend
-        run: cd backend
+      # removed: moving directories between steps doesn't persist
 
       - name: Install dependencies
         run: npm ci
+        working-directory: backend
 
       - name: Type Check backend
-        run: npx tsc -p backend --noEmit
+        run: npx tsc -p . --noEmit
+        working-directory: backend
 
       - name: Build backend
-        run: npm run build:backend
+        run: npm run build
+        working-directory: backend
 
       - name: Prepare deployment package
         run: |
           mkdir -p deploy-package
-          cp -r backend/dist deploy-package/
+          cp -r dist deploy-package/
           cp package.json package-lock.json deploy-package/
+        working-directory: backend
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: deploy-package
+          package: backend/deploy-package
