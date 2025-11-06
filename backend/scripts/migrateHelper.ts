@@ -17,7 +17,10 @@ const dbHost = process.env.DB_HOST!;
 const dbPort = process.env.DB_PORT!;
 const dbName = process.env.DB_NAME!;
 
-const dbUrl = `postgresql://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
+// Append ssl flag if requested
+const sslEnabled = (process.env.DB_SSL || '').toLowerCase() === 'true';
+const baseUrl = `postgresql://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`;
+const dbUrl = sslEnabled ? `${baseUrl}?ssl=true` : baseUrl;
 
 // Configure DATABASE_URL for node-pg-migrate
 process.env.DATABASE_URL = dbUrl;
@@ -32,7 +35,7 @@ try {
     const backendDir = path.join(__dirname, '..');
     
     // Log connection info (without password)
-    console.log(`Connecting to: ${dbHost}:${dbPort}/${dbName}`);
+    console.log(`Connecting to: ${dbHost}:${dbPort}/${dbName} (ssl=${sslEnabled})`);
     console.log(`Running migrations: ${action}`);
     
     // Ensure DATABASE_URL is set in the environment
