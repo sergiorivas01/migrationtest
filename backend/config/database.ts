@@ -9,6 +9,8 @@ type DatabaseConfig = {
     max: number;
     idleTimeoutMillis: number;
     connectionTimeoutMillis: number;
+    // Optional SSL configuration for encrypted connections
+    ssl?: boolean | { rejectUnauthorized: boolean };
 };
 
 // Configurar objeto de conexión
@@ -25,6 +27,14 @@ const dbConfig: DatabaseConfig = {
 // Solo agregar password si está definido
 if (process.env.DB_PASSWORD && process.env.DB_PASSWORD.trim() !== '') {
     dbConfig.password = process.env.DB_PASSWORD;
+}
+
+// Enable SSL if requested via environment variables
+// DB_SSL: 'true' to enable TLS encryption
+// DB_SSL_REJECT_UNAUTHORIZED: 'false' to skip cert verification (not recommended)
+if (process.env.DB_SSL === 'true') {
+    const rejectUnauthorized = process.env.DB_SSL_REJECT_UNAUTHORIZED === 'false' ? false : true;
+    dbConfig.ssl = { rejectUnauthorized };
 }
 
 const pool = new Pool(dbConfig);
