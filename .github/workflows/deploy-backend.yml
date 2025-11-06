@@ -109,8 +109,14 @@ jobs:
       - name: Prepare deployment package
         run: |
           mkdir -p deploy-package
+          # Copy compiled code
           cp -r dist deploy-package/
+          # Copy package files
           cp package.json package-lock.json deploy-package/
+          # Install production dependencies in deploy package
+          cd deploy-package
+          npm ci --omit=dev --ignore-scripts
+          cd ..
         working-directory: backend
 
       - name: Deploy to Azure Web App
