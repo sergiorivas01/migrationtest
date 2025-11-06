@@ -1,160 +1,303 @@
-# Proyecto ImageProject
+# ImageProject
 
-Aplicación web full-stack con Node.js, Express y PostgreSQL.
+Full-stack web application with Node.js, Express, TypeScript, Vite, and PostgreSQL.
 
-## 🚀 Características
+## 🚀 Features
 
-- ✅ **Backend con Node.js y Express**: API RESTful para interactuar con la base de datos
-- 🗄️ **Base de datos PostgreSQL**: Almacenamiento persistente de datos
-- 🎨 **Frontend moderno**: Interfaz con gradientes y animaciones
-- 📱 **Responsive**: Adaptable a diferentes tamaños de pantalla
-- ⚡ **Rutas API**: CRUD completo para usuarios, publicaciones y tareas
+- ✅ **Backend with Node.js/Express/TypeScript**: RESTful API to interact with the database
+- 🗄️ **PostgreSQL Database**: Persistent data storage with migrations
+- 🎨 **Modern Frontend with Vite**: Interface with TypeScript, gradients and animations
+- 📱 **Responsive**: Adaptable to different screen sizes
+- ⚡ **API Routes**: Complete CRUD for users, posts, and todos
+- 🔄 **Migration System**: Database change management with `node-pg-migrate`
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 imageproject/
-├── public/               # Archivos estáticos
-│   ├── index.html       # Página principal
-│   ├── style.css        # Estilos CSS
-│   └── script.js        # Lógica del frontend
-├── config/              # Configuración
-│   └── database.js      # Configuración PostgreSQL
-├── routes/              # Rutas de la API
-│   ├── users.js         # Rutas de usuarios
-│   ├── posts.js         # Rutas de publicaciones
-│   └── todos.js         # Rutas de tareas
-├── scripts/             # Scripts de utilidad
-│   └── initDatabase.js  # Inicialización de BD
-├── server.js            # Servidor principal
-├── package.json         # Dependencias del proyecto
-└── .env.example         # Ejemplo de variables de entorno
+├── backend/                    # Backend API
+│   ├── config/                 # Configuration
+│   │   └── database.ts         # PostgreSQL configuration
+│   ├── routes/                 # API routes
+│   │   ├── users.ts            # User routes
+│   │   ├── posts.ts            # Post routes
+│   │   └── todos.ts            # Todo routes
+│   ├── scripts/                # Utility scripts
+│   │   ├── initDatabase.ts     # Database initialization
+│   │   ├── migrateHelper.ts    # Migration helper
+│   │   └── createMigration.ts  # Create new migrations
+│   ├── migrations/             # Database migrations
+│   ├── dist/                   # Compiled code (TypeScript)
+│   ├── server.ts               # Main server
+│   ├── package.json            # Backend dependencies
+│   └── tsconfig.json           # TypeScript configuration
+├── frontend/                   # Frontend SPA
+│   ├── public/                 # Public files
+│   │   └── data/               # Example JSON data
+│   ├── dist/                   # Production build
+│   ├── index.html              # Main page
+│   ├── script.ts               # Frontend logic (TypeScript)
+│   ├── style.css               # CSS styles
+│   ├── vite.config.ts          # Vite configuration
+│   ├── package.json            # Frontend dependencies
+│   └── tsconfig.json           # TypeScript configuration
+└── .github/workflows/          # GitHub Actions for CI/CD
 ```
 
-## 🛠️ Instalación
+## 🛠️ Installation
 
-### 1. Instalar dependencias
+### Prerequisites
+
+- Node.js 20 or higher
+- PostgreSQL 12 or higher
+- npm or yarn
+
+### 1. Install Dependencies
 
 ```bash
+# Install backend dependencies
+cd backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
-### 2. Configurar PostgreSQL
+### 2. Configure PostgreSQL
 
-Asegúrate de tener PostgreSQL instalado y corriendo. Luego:
+Make sure PostgreSQL is installed and running. Then:
 
-1. Crea un archivo `.env` basado en `.env.example`:
+1. Create a `.env` file in the project root or in `backend/`:
 
 ```bash
-cp .env.example .env
+# In the project root
+touch .env
 ```
 
-2. Edita el archivo `.env` con tus credenciales:
+2. Edit the `.env` file with your credentials:
 
 ```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=imageproject_db
 DB_USER=postgres
-DB_PASSWORD=tu_contraseña
+DB_PASSWORD=your_password
 PORT=3000
 ```
 
-3. Crea la base de datos:
+3. Create the database:
 
 ```bash
 createdb imageproject_db
 ```
 
-4. Inicializa las tablas y datos de ejemplo:
+4. Initialize tables and example data:
 
 ```bash
-npm run init-db
+cd backend
+npm run db:init
 ```
 
-### 3. Iniciar el servidor
+5. (Optional) Run migrations:
 
 ```bash
-# Modo producción
-npm start
+cd backend
+npm run migrate:up
+```
 
-# Modo desarrollo (con auto-reload)
+### 3. Configure migrate.json (for migrations)
+
+If you're going to use migrations, copy the template:
+
+```bash
+cd backend
+cp migrate.json.example migrate.json
+```
+
+Edit `migrate.json` with your database credentials.
+
+### 4. Start the Project
+
+**Option A: Development (separate)**
+
+```bash
+# Terminal 1 - Backend
+cd backend
 npm run dev
+# Backend will be at http://localhost:3000
+
+# Terminal 2 - Frontend
+cd frontend
+npm run dev
+# Frontend will be at http://localhost:8001
 ```
 
-El servidor estará disponible en `http://localhost:3000`
+**Option B: Production (backend serves frontend)**
 
-## 📡 Endpoints API
+```bash
+# 1. Build the frontend
+cd frontend
+npm run build
 
-### Usuarios
+# 2. Build the backend
+cd ../backend
+npm run build
 
-- `GET /api/users` - Obtener todos los usuarios
-- `GET /api/users/:id` - Obtener un usuario específico
-- `POST /api/users` - Crear un nuevo usuario
+# 3. Start the server
+npm start
+# Everything will be available at http://localhost:3000
+```
 
-### Publicaciones
+## 📡 API Endpoints
 
-- `GET /api/posts` - Obtener todas las publicaciones
-- `GET /api/posts/:id` - Obtener una publicación específica
-- `POST /api/posts` - Crear una nueva publicación
+### Users
 
-### Tareas
+- `GET /users` - Get all users
+- `GET /users/:id` - Get a specific user
+- `POST /users` - Create a new user
 
-- `GET /api/todos` - Obtener todas las tareas
-- `GET /api/todos/:id` - Obtener una tarea específica
-- `POST /api/todos` - Crear una nueva tarea
-- `PATCH /api/todos/:id` - Actualizar el estado de una tarea
+### Posts
 
-## 💻 Uso
+- `GET /posts` - Get all posts
+- `GET /posts/:id` - Get a specific post
+- `POST /posts` - Create a new post
 
-1. Abre tu navegador en `http://localhost:3000`
-2. Haz clic en los botones para cargar datos:
-   - **Obtener Usuarios**: Muestra usuarios de la base de datos
-   - **Obtener Publicaciones**: Muestra publicaciones de la base de datos
-   - **Obtener Tareas**: Muestra tareas de la base de datos
+### Todos
 
-## 🗄️ Base de Datos
+- `GET /todos` - Get all todos
+- `GET /todos/:id` - Get a specific todo
+- `POST /todos` - Create a new todo
+- `PATCH /todos/:id` - Update todo status
 
-### Tablas
+## 💻 Usage
 
-1. **users**: Almacena información de usuarios
+### Development
 
-   - id, name, email, phone, city, company
+1. Start the backend at `http://localhost:3000`
+2. Start the frontend at `http://localhost:8001`
+3. Open your browser at `http://localhost:8001`
+4. Click the buttons to load data:
+   - **Get Users**: Shows users from the database
+   - **Get Posts**: Shows posts from the database
+   - **Get Todos**: Shows todos from the database
 
-2. **posts**: Almacena publicaciones
+### Production
 
-   - id, title, body, user_id
+The backend serves the compiled frontend from `http://localhost:3000`
 
-3. **todos**: Almacena tareas
-   - id, title, completed
+## 🗄️ Database
 
-### Inicialización
+### Tables
 
-El script `scripts/initDatabase.js` crea las tablas e inserta datos de ejemplo automáticamente.
+1. **users**: Stores user information
 
-## 🔧 Tecnologías Utilizadas
+   - `id` (SERIAL PRIMARY KEY)
+   - `name` (VARCHAR)
+   - `email` (VARCHAR, UNIQUE)
+   - `phone` (VARCHAR)
+   - `city` (VARCHAR)
+   - `company` (VARCHAR)
+   - `created_at` (TIMESTAMP)
 
-- **Backend**: Node.js, Express
-- **Base de datos**: PostgreSQL
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Otros**: pg (cliente PostgreSQL), dotenv, cors
+2. **posts**: Stores posts
 
-## 📝 Scripts Disponibles
+   - `id` (SERIAL PRIMARY KEY)
+   - `title` (VARCHAR)
+   - `body` (TEXT)
+   - `user_id` (INTEGER, FK to users)
 
-- `npm start` - Inicia el servidor en modo producción
-- `npm run dev` - Inicia el servidor con nodemon (desarrollo)
-- `npm run init-db` - Inicializa la base de datos
+3. **todos**: Stores todos
+   - `id` (SERIAL PRIMARY KEY)
+   - `title` (VARCHAR)
+   - `completed` (BOOLEAN)
 
-## 🤝 Contribuir
+### Initialization
 
-Las contribuciones son bienvenidas. Por favor:
+The script `backend/scripts/initDatabase.ts` creates the tables and inserts example data automatically.
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+### Migrations
 
-## 📄 Licencia
+The project uses `node-pg-migrate` to manage database changes:
+
+```bash
+cd backend
+
+# Create a new migration
+npm run migrate:create migration_name
+
+# Run pending migrations
+npm run migrate:up
+
+# Revert the last migration
+npm run migrate:down
+```
+
+Migrations are located in `backend/migrations/`.
+
+## 🔧 Technologies Used
+
+### Backend
+
+- **Node.js** 20+
+- **Express** - Web framework
+- **TypeScript** - Static typing
+- **PostgreSQL** 12+ - Relational database
+- **pg** - PostgreSQL client for Node.js
+- **node-pg-migrate** - Migration management
+- **dotenv** - Environment variables
+- **cors** - CORS support
+
+### Frontend
+
+- **Vite** - Build tool and dev server
+- **TypeScript** - Static typing
+- **HTML5/CSS3** - Structure and styles
+
+## 📝 Available Scripts
+
+### Backend (`backend/package.json`)
+
+- `npm run dev` - Start the server in development mode with auto-reload
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm start` - Start the server in production mode (requires build)
+- `npm run db:init` - Initialize the database with tables and example data
+- `npm run migrate:up` - Run pending migrations
+- `npm run migrate:down` - Revert the last migration
+- `npm run migrate:create <name>` - Create a new migration
+
+### Frontend (`frontend/package.json`)
+
+- `npm run dev` - Start the development server (port 8001)
+- `npm run build` - Build the project for production
+- `npm run preview` - Preview the production build
+
+## 🔒 Security
+
+- ⚠️ **NEVER** commit files with credentials to the repository
+- The `backend/migrate.json` file is in `.gitignore` (use `migrate.json.example` as a template)
+- Environment variables (`.env`) are also ignored
+- Change passwords if they were accidentally committed to the repository
+
+## 🚀 Deployment
+
+The project includes GitHub Actions workflows for automatic deployment:
+
+- **Backend**: `.github/workflows/deploy-backend.yml` - Deploys to Azure Web App
+- **Frontend**: `.github/workflows/deploy-frontend.yml` - Deploys to Azure Static Web Apps
+
+Workflows are automatically triggered on push to `main` or `dev` branches.
+
+## 🤝 Contributing
+
+Contributions are welcome. Please:
+
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
 
 MIT License
