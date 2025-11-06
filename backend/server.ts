@@ -18,6 +18,34 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Database connection test endpoint
+app.get('/dbtest', async (req: Request, res: Response) => {
+    try {
+        const result = await db.query('SELECT NOW()');
+        const dbInfo = {
+            connected: true,
+            timestamp: result.rows[0].now,
+            dbHost: process.env.DB_HOST || 'not set',
+            dbPort: process.env.DB_PORT || 'not set',
+            dbName: process.env.DB_NAME || 'not set',
+            sslEnabled: process.env.DB_SSL === 'true'
+        };
+        res.json({
+            success: true,
+            message: '✅ Conexión exitosa a PostgreSQL',
+            data: dbInfo
+        });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error('❌ Error de conexión:', err);
+        res.status(500).json({
+            success: false,
+            message: '❌ Error de conexión',
+            error: errorMessage
+        });
+    }
+});
+
 // API routes without /api prefix (must be BEFORE static)
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
