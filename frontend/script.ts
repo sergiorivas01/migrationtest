@@ -35,22 +35,22 @@ function initApp(): void {
     // Show/hide loading indicator
     function showLoading(show: boolean): void {
         if (show) {
-            loadingDiv.classList.remove('hidden');
-            resultsDiv.innerHTML = '';
-            errorDiv.classList.add('hidden');
-            errorDiv.textContent = '';
+            loadingDiv!.classList.remove('hidden');
+            resultsDiv!.innerHTML = '';
+            errorDiv!.classList.add('hidden');
+            errorDiv!.textContent = '';
         } else {
-            loadingDiv.classList.add('hidden');
+            loadingDiv!.classList.add('hidden');
         }
     }
 
     // Show errors
     function showError(message: string): void {
-        errorDiv.textContent = message;
-        errorDiv.classList.remove('hidden');
+        errorDiv!.textContent = message;
+        errorDiv!.classList.remove('hidden');
     }
 
-    // Fetch data from API (with static fallback)
+    // Fetch data from API (sin fallback a estático)
 async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promise<void> {
         showLoading(true);
         
@@ -65,33 +65,23 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             showLoading(false);
             displayResults(data, type);
         } catch (error) {
-            // Fallback to static JSON if API is unavailable or request fails
-            try {
-                const staticPath = `/data/${type}.json`;
-                const staticResp = await fetch(staticPath);
-                if (!staticResp.ok) throw new Error(`Fallback HTTP ${staticResp.status}`);
-                const staticData = await staticResp.json();
-                showLoading(false);
-                displayResults(staticData, type);
-            } catch (fallbackErr) {
-                showLoading(false);
-                const message = (error instanceof Error ? error.message : String(error)) || (fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr));
-                showError(`Failed to fetch data: ${message}`);
-                console.error('Error in fetchData:', error, 'Fallback:', fallbackErr);
-            }
+            showLoading(false);
+            const message = error instanceof Error ? error.message : String(error);
+            showError(`Failed to fetch data: ${message}`);
+            console.error('Error in fetchData:', error);
         }
     }
 
     // Render results
     function displayResults(data: unknown, type: 'users' | 'posts' | 'todos'): void {
-        resultsDiv.innerHTML = '';
+        resultsDiv!.innerHTML = '';
         
         // Limit to 10 items for better readability
         const arrayData = Array.isArray(data) ? data : [data];
         
         arrayData.slice(0, 10).forEach((item: any) => {
             const card = createCard(item, type);
-            resultsDiv.appendChild(card);
+            resultsDiv!.appendChild(card);
         });
         
         if (arrayData.length === 0) {
@@ -99,7 +89,7 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             noData.style.textAlign = 'center';
             noData.style.color = '#666';
             noData.textContent = 'No data available';
-            resultsDiv.appendChild(noData);
+            resultsDiv!.appendChild(noData);
         }
     }
 
