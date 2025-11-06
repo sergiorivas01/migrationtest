@@ -63,7 +63,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Iniciar servidor
 app.listen(PORT, async () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`📊 Connecting to: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+    console.log(`📊 Connecting to Database`);
     
     // Probar conexión a la base de datos
     try {

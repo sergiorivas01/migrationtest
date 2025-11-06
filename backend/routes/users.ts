@@ -6,6 +6,7 @@ const router = Router();
 // GET - Get all users
 router.get('/', async (req: Request, res: Response) => {
     try {
+        console.log('Fetching users');
         const result = await db.query(
             'SELECT id, name, email, phone, city, company, created_at FROM users ORDER BY id ASC'
         );

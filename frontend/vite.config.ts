@@ -6,9 +6,9 @@ export default defineConfig({
   server: {
     port: 8001,
     proxy: {
-      '/users': { target: 'http://localhost:3000', changeOrigin: true, secure: false },
-      '/posts': { target: 'http://localhost:3000', changeOrigin: true, secure: false },
-      '/todos': { target: 'http://localhost:3000', changeOrigin: true, secure: false }
+      '/users': { target: 'http://localhost:8002', changeOrigin: true, secure: false },
+      '/posts': { target: 'http://localhost:8002', changeOrigin: true, secure: false },
+      '/todos': { target: 'http://localhost:8002', changeOrigin: true, secure: false }
     }
   },
   build: {

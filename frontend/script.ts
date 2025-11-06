@@ -4,7 +4,17 @@ function normalizeBase(base: string | undefined): string {
     return base.endsWith('/') ? base.slice(0, -1) : base;
 }
 
-const API_BASE = normalizeBase((import.meta as any).env?.VITE_API_BASE_URL);
+// Enforce that VITE_API_BASE_URL is defined
+const envApiBase = (import.meta as any).env?.VITE_API_BASE_URL;
+if (!envApiBase) {
+    throw new Error(
+        '❌ VITE_API_BASE_URL is required but not defined. ' +
+        'Please set it in your .env file or environment variables. ' +
+        'Example: VITE_API_BASE_URL=http://localhost:8002'
+    );
+}
+
+const API_BASE = normalizeBase(envApiBase);
 
 const API_URLS = {
     users: `${API_BASE}/users`,
@@ -65,9 +75,9 @@ async function fetchData(url: string, type: 'users' | 'posts' | 'todos'): Promis
             showLoading(false);
             displayResults(data, type);
         } catch (error) {
-            showLoading(false);
+                showLoading(false);
             const message = error instanceof Error ? error.message : String(error);
-            showError(`Failed to fetch data: ${message}`);
+                showError(`Failed to fetch data: ${message}`);
             console.error('Error in fetchData:', error);
         }
     }
