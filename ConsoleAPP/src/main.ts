@@ -9,7 +9,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-function askQuestion(question: string): Promise<string> {
+export function askQuestion(question: string): Promise<string> {
     return new Promise((resolve) => {
         rl.question(question, (answer) => {
             resolve(answer);
@@ -17,7 +17,7 @@ function askQuestion(question: string): Promise<string> {
     });
 }
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
     // Step 1: Check database connection
     console.log('Checking database connection...');
     const isConnected = await checkDatabaseConnection();
@@ -63,6 +63,9 @@ async function main(): Promise<void> {
     rl.close();
 }
 
-void main();
+// Only run main if this file is executed directly, not when imported
+if (require.main === module) {
+    void main();
+}
 
 
