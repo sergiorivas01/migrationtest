@@ -1,4 +1,4 @@
-import { Add, AddAsync } from './math';
+import { Add, AddAsync } from '../src/math';
 
 describe('math', () => {
     describe('Add', () => {
@@ -30,6 +30,31 @@ describe('math', () => {
         it('should handle string numbers correctly', () => {
             const result = Add(Number('10'), Number('20'));
             expect(result).toBe(30);
+        });
+
+        it('should handle limit numbers correctly', () => {
+            const result = Add(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+            expect(result).toBe(Number.MAX_SAFE_INTEGER + Number.MAX_SAFE_INTEGER);
+        });
+
+        it('should handle positive and negative limit numbers correctly', () => {
+            const result = Add(Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER);
+            expect(result).toBe(0);
+        });
+
+        it('should handle two zeros correctly', () => {
+            const result = Add(0, 0);
+            expect(result).toBe(0);
+        });
+
+        it('should handle a zero and a negative number correctly', () => {
+            const result = Add(0, -5);
+            expect(result).toBe(-5);
+        });
+
+        it('should handle a zero and a positive number correctly', () => {
+            const result = Add(0, 5);
+            expect(result).toBe(5);
         });
     });
 
@@ -72,6 +97,26 @@ describe('math', () => {
             
             // Should take at least 1000ms due to the setTimeout
             expect(elapsed).toBeGreaterThanOrEqual(1000);
+        });
+
+        it('should add two zeros correctly', async () => {
+            const result = await AddAsync(0, 0);
+            expect(result).toBe(0);
+        });
+
+        it('should add a zero and a negative number correctly', async () => {
+            const result = await AddAsync(0, -5);
+            expect(result).toBe(-5);
+        });
+
+        it('should add two limit numbers correctly', async () => {
+            const result = await AddAsync(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+            expect(result).toBe(Number.MAX_SAFE_INTEGER + Number.MAX_SAFE_INTEGER);
+        });
+
+        it('should add positive and negative limit numbers correctly', async () => {
+            const result = await AddAsync(Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER);
+            expect(result).toBe(0);
         });
     });
 });
